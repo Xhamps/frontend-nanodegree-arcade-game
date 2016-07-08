@@ -11,13 +11,35 @@ var LIMIT = {
 var player;
 var allEnemies = [];
 
-var Enemy = function(sizeCol, sizeRow, gutter) {
-    this.sprite = 'images/enemy-bug.png';
+
+var BaseElements = function(sizeCol, sizeRow, gutter, limit) {
     this.sizeCol = sizeCol;
     this.sizeRow = sizeRow;
     this.gutter = gutter;
+    this.limit = limit;
     this.start();
 };
+
+BaseElements.prototype.start = function() {
+    this.x = 0;
+    this.y = 0;
+};
+
+BaseElements.prototype.update = function() { };
+
+BaseElements.prototype.handleInput = function() { };
+
+BaseElements.prototype.render = function() {
+    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+};
+
+
+var Enemy = function(sizeCol, sizeRow, gutter) {
+    this.sprite = 'images/enemy-bug.png';
+    BaseElements.call(this, sizeCol, sizeRow, gutter);
+};
+
+Enemy.prototype = Object.create(BaseElements.prototype);
 
 Enemy.prototype.start = function() {
     this.x =  this.sizeCol * -1;
@@ -39,18 +61,16 @@ Enemy.prototype.update = function(dt) {
     }
 };
 
-Enemy.prototype.render = function() {
-    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
-};
-
-
 var Player = function(sizeCol, sizeRow, gutter, limit) {
     this.sprite = 'images/char-boy.png';
-    this.sizeCol = sizeCol;
-    this.sizeRow = sizeRow;
-    this.gutter = gutter;
-    this.limit = limit;
-    this.start();
+    BaseElements.call(this, sizeCol, sizeRow, gutter, limit);
+};
+
+Player.prototype = Object.create(BaseElements.prototype);
+
+Player.prototype.start = function() {
+    this.x = this.sizeCol * 2;
+    this.y = (this.sizeRow * 5) + this.gutter;
 };
 
 Player.prototype.update = function(dt) {
@@ -70,19 +90,11 @@ Player.prototype.update = function(dt) {
     }
 };
 
-Player.prototype.start = function() {
-    this.x = this.sizeCol * 2;
-    this.y = (this.sizeRow * 5) + this.gutter;
-};
-
-Player.prototype.render = function() {
-    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
-};
-
 
 Player.prototype.handleInput = function(dt){
     this.update(dt);
 };
+
 
 player = new Player(SIZE_COL, SIZE_ROW, GUTTER, LIMIT);
 
