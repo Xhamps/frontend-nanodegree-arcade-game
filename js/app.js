@@ -1,3 +1,4 @@
+var player;
 var allEnemies = [];
 var gutter = -25;
 var size = {
@@ -10,7 +11,6 @@ var max = {
 };
 
 var Enemy = function() {
-
     this.sprite = 'images/enemy-bug.png';
     this.start();
 };
@@ -26,6 +26,12 @@ Enemy.prototype.update = function(dt) {
 
     if (this.x > size.col + 505){
         this.start();
+    }
+
+    if( (player.x +  size.col) + gutter > this.x  && player.x < (this.x + size.col) + gutter &&
+        player.y === this.y){
+        this.start();
+        player.start();
     }
 };
 
@@ -50,12 +56,16 @@ Player.prototype.update = function(dt) {
 
     if( this.y < gutter ) this.y = gutter;
     if( this.y > max.height ) this.y = max.height ;
+
+    if( this.y === gutter){
+        this.start();
+    }
 };
 
 Player.prototype.start = function() {
     this.x = size.col * 2;
     this.y = (size.row * 5) + gutter;
-}
+};
 
 Player.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
@@ -66,7 +76,7 @@ Player.prototype.handleInput = function(dt){
     this.update(dt);
 };
 
-var player = new Player();
+player = new Player();
 
 allEnemies.push(new Enemy());
 allEnemies.push(new Enemy());
