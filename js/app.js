@@ -1,3 +1,5 @@
+'use strict';
+
 var player;
 var allEnemies = [];
 var gutter = -25;
